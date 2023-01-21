@@ -21,7 +21,7 @@ class ContactsResource extends JsonResource
             'id'=>$this->id,
             'first_name'=>$this->first_name,
             'last_name'=>$this->lastName,
-            "email"=>$this->email,
+            'email'=>$this->card->card_email,
             "card"=>[
                 'profile_image'=>$this->card->profile_image,
                 "displayname"=> $this->card->displayname,

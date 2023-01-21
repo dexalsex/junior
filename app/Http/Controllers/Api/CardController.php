@@ -30,13 +30,20 @@ class CardController extends Controller
                 'instagram' => 'nullable|string|max:255',
                 'github' => 'nullable|string|max:255',
                 'facebook' => 'nullable|string|max:255',
-                'template_id'=>'required|numeric|digits:1'
+                'template_id'=>'required|numeric|digits:1',
+                'card_email' => 'required|email|string|max:25|unique:cards'
 
             ]);
             if ($validator->fails()) {
                 return response()->json($validator->errors(), 422);
             }
 
+            $email_security_check = User::findOrFail($req['card_email']);
+            if($email_security_check && $email_security_check->id != auth()->user()->id()){
+                return response()->json([
+                    'error' => 'This email is registerd to another user, if you think this is a mistake please contact support.']
+                    ,301);
+            }
 
 
 
@@ -52,12 +59,16 @@ class CardController extends Controller
                 $file->move('uploaded_images', $fileName);
             }
 
+            $card->profile_image = isset($fileName) ? url('/') . '/uploaded_images/' . $fileName : null;
+            $card->save();
+
             $card->update([
-                'profile_image' => url('/').'/uploaded_images/'.$fileName,
+                //'profile_image' => url('/').'/uploaded_images/'.$fileName,
                 'displayname' => $request['displayname'],
                 'job_title' => $request['job_title'],
                 'about' => $request['about'],
                 'address' => $request['address'],
+                'card_email' => $request['card_email']
 
             ]);
 
@@ -86,8 +97,7 @@ class CardController extends Controller
 
 
             // $card->fill($request->all());
-            $card->profile_image = isset($fileName) ? url('/') . '/uploaded_images/' . $fileName : null;
-            $card->save();
+
             return response()->json([
                 'message' => 'The card has been saved successfully',
                 'card' => $card

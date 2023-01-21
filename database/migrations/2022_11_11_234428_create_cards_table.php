@@ -20,6 +20,7 @@ class CreateCardsTable extends Migration
             $table->string('job_title');
             $table->string('address')->nullable();
             $table->string('about');
+            $table->string('card_email');
             $table->unsignedInteger('template_id');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

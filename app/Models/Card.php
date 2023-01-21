@@ -16,7 +16,8 @@ class Card extends Model
         'about',
         'address',
         'profile_image',
-        'template_id'
+        'template_id',
+        'card_email'
 
     ];
 

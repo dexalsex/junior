@@ -156,7 +156,8 @@ class UserController extends Controller
                 'instagram' => 'nullable|string|max:255',
                 'github' => 'nullable|string|max:255',
                 'facebook' => 'nullable|string|max:255',
-                'template_id' => 'required|numeric|digits:1'
+                'template_id' => 'required|numeric|digits:1',
+                'card_email' => 'required|email|string|max:25|unique:cards'
 
             ]);
             if ($validator->fails()) {
@@ -196,6 +197,12 @@ class UserController extends Controller
                     'error' => 'file name too long'
                 ], 400);
             }
+            $email_security_check = User::findOrFail($req['card_email']);
+            if($email_security_check && $email_security_check->id != auth()->user()->id()){
+                return response()->json([
+                    'error' => 'This email is registerd to another user, if you think this is a mistake please contact support.']
+                    ,301);
+            }
             $card = Card::create([
                 'profile_image' => url('/').'/uploaded_images/'.$fileName,
                 'displayname' => $req['displayname'],
@@ -203,7 +210,8 @@ class UserController extends Controller
                 'about' => $req['about'],
                 'address' => $req['address'],
                 'user_id' => $id,
-                'template_id' =>$req['template_id']
+                'template_id' =>$req['template_id'],
+                'card_email' =>$req['card_email']
             ]);
             $id = $card['id'];
             $ph1 = $req['phone_num1'];

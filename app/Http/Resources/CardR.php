@@ -23,8 +23,7 @@ class CardR extends JsonResource
             "address" => $this->address,
             "about" => $this->about,
             "user_id" => 4,
-            "email" => $this->user->email,
-            'xd' =>'dex',
+            "email" => $this->card_email, //change this and other resource
             "phone_num1" => $this->phonenumbers[0]?->number??null,
             "phone_num2" => $this->phonenumbers[1]?->number??null,
             'facebook' => $this->links[0]?->link??null,
